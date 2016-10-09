@@ -3,6 +3,8 @@ import java.util.*;
 
 public class Board {
 
+    // TODO: Connection logical error: A->B means that A has a road to B, and B has a road from A.
+
     public static final int BOARD_SIZE = 4;
     private ChessPiece[][][] boardMatrix;
     private Map<LocationPair, Boolean> connection;
@@ -65,7 +67,7 @@ public class Board {
         for (Location l1 : validLocations)
             for (Location l2 : validLocations)
                 for (Location mid : validLocations)
-                    if (connection.get(new LocationPair(l1, mid)) && connection.get(new LocationPair(l2, mid)))
+                    if (connection.get(new LocationPair(l1, mid)) && connection.get(new LocationPair(mid, l2)))
                         connection.put(new LocationPair(l1, l2), true);
     }
 

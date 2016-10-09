@@ -50,7 +50,7 @@ public class PlumaxGame {
                     System.out.println(ANSI_BLUE + players[i].getName() + " is in Team BLUE.");
                     break;
                 case TEAM_GREEN:
-                    System.out.println(ANSI_GREEN + players[i].getName() + (i+1) + " is in Team GREEN.");
+                    System.out.println(ANSI_GREEN + players[i].getName() + " is in Team GREEN.");
                     break;
                 default:
                     break;
