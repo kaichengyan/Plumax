@@ -4,6 +4,7 @@ import java.util.*;
 public class Board {
 
     public static final int BOARD_SIZE = 1;
+
     private ChessPiece[][][] boardMatrix;
     private Map<LocationPair, Boolean> connection;
     private Map<LocationPair, LocationPair.ConnectionType> pendingConnections;
@@ -113,6 +114,7 @@ public class Board {
                 || reverseConn == LocationPair.ConnectionType.BILATERAL_ONE_WAY_NO_PASS) {
             pendingConnections.put(new LocationPair(l2, l1), LocationPair.ConnectionType.MONOLATERAL_OUT_ONLY);
         }
+
     }
 
     public void printConnections() {
