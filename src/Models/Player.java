@@ -48,6 +48,7 @@ public class Player {
         }
         if (board.putPiece(piece)) {
             pieces.remove(piece.getType());
+            board.update();
             return true;
         }
         return false;

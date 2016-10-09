@@ -4,7 +4,6 @@ public class LocationPair {
 
     private Location from;
     private Location to;
-    private boolean isSingleDirection;
 
     public enum ConnectionType {
         MONOLATERAL_OUT_ONLY,
@@ -12,21 +11,12 @@ public class LocationPair {
         BILATERAL_OPEN,
         BILATERAL_ONE_WAY_CAN_PASS,
         BILATERAL_ONE_WAY_NO_PASS,
-        MONOLATERAL_CLOSED,
-        INDIRECT_OPEN,
-        INDIRECT_CLOSED
+        MONOLATERAL_CLOSED
     }
 
     public LocationPair(Location from, Location to) {
         this.from = from;
         this.to = to;
-        this.isSingleDirection = false;
-    }
-
-    public LocationPair(Location from, Location to, boolean isSingleDirection) {
-        this.from = from;
-        this.to = to;
-        this.isSingleDirection = isSingleDirection;
     }
 
     @Override

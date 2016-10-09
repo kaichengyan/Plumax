@@ -242,7 +242,7 @@ public class PlumaxGame {
                 } else {
                     System.out.println("\t1) Lower-right");
                     System.out.println("\t2) Lower-left");
-                    System.out.println("\t3) Down");
+                    System.out.println("\t3) Up");
                     System.out.print("\t");
                     switch (input.nextInt()) {
                         case 1:

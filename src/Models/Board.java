@@ -41,7 +41,7 @@ public class Board {
 
         for (Location l1 : validLocations) {
             for (Location l2 : validLocations) {
-                pendingConnections.put(new LocationPair(l1, l2), LocationPair.ConnectionType.INDIRECT_CLOSED);
+                pendingConnections.put(new LocationPair(l1, l2), LocationPair.ConnectionType.MONOLATERAL_CLOSED);
                 boolean isConnected = false;
                 if (l1.equals(l2)) {
                     isConnected = true;
@@ -58,9 +58,7 @@ public class Board {
         connect(BLUE_START, BLUE_START_NEXT, LocationPair.ConnectionType.MONOLATERAL_OPEN);
         connect(BLUE_END, BLUE_END_NEXT, LocationPair.ConnectionType.MONOLATERAL_OPEN);
 
-        updatePendingBilateralConnections();
-        updateDirectConnections();
-        updateIndirectConnections();
+        update();
 
     }
 
@@ -83,21 +81,59 @@ public class Board {
 
     private void connect(Location l1, Location l2, LocationPair.ConnectionType type) {
         if (l1.isValidLocation() && l2.isValidLocation()) {
+            LocationPair.ConnectionType reverseConn = pendingConnections.get(new LocationPair(l2, l1));
             pendingConnections.put(new LocationPair(l1, l2), type);
+            if (type == LocationPair.ConnectionType.MONOLATERAL_OPEN) {
+                if (reverseConn == LocationPair.ConnectionType.MONOLATERAL_OPEN) {
+                    pendingConnections.put(new LocationPair(l1, l2), LocationPair.ConnectionType.BILATERAL_OPEN);
+                    pendingConnections.put(new LocationPair(l2, l1), LocationPair.ConnectionType.BILATERAL_OPEN);
+                } else if (reverseConn == LocationPair.ConnectionType.MONOLATERAL_OUT_ONLY) {
+                    pendingConnections.put(new LocationPair(l1, l2), LocationPair.ConnectionType.BILATERAL_ONE_WAY_NO_PASS);
+                    pendingConnections.put(new LocationPair(l2, l1), LocationPair.ConnectionType.BILATERAL_ONE_WAY_CAN_PASS);
+                }
+            } else if (type == LocationPair.ConnectionType.MONOLATERAL_OUT_ONLY) {
+                if (reverseConn == LocationPair.ConnectionType.MONOLATERAL_OPEN) {
+                    pendingConnections.put(new LocationPair(l1, l2), LocationPair.ConnectionType.BILATERAL_ONE_WAY_CAN_PASS);
+                    pendingConnections.put(new LocationPair(l2, l1), LocationPair.ConnectionType.BILATERAL_ONE_WAY_NO_PASS);
+                } else if (reverseConn == LocationPair.ConnectionType.MONOLATERAL_OUT_ONLY) {
+                    connect(l1, l2, LocationPair.ConnectionType.BILATERAL_ONE_WAY_NO_PASS);
+                    connect(l2, l1, LocationPair.ConnectionType.BILATERAL_ONE_WAY_NO_PASS);
+                }
+            }
         }
-        updatePendingBilateralConnections();
+    }
+
+    private void disconnect(Location l1, Location l2) {
+        pendingConnections.put(new LocationPair(l1, l2), LocationPair.ConnectionType.MONOLATERAL_CLOSED);
+        // l1 closes. update pending connections l2->l1.
+        LocationPair.ConnectionType reverseConn = pendingConnections.get(new LocationPair(l2, l1));
+        if (reverseConn == LocationPair.ConnectionType.BILATERAL_OPEN) {
+            pendingConnections.put(new LocationPair(l2, l1), LocationPair.ConnectionType.MONOLATERAL_OPEN);
+        } else if (reverseConn == LocationPair.ConnectionType.BILATERAL_ONE_WAY_CAN_PASS
+                || reverseConn == LocationPair.ConnectionType.BILATERAL_ONE_WAY_NO_PASS) {
+            pendingConnections.put(new LocationPair(l2, l1), LocationPair.ConnectionType.MONOLATERAL_OUT_ONLY);
+        }
         updateDirectConnections();
-        updateIndirectConnections();
+    }
+
+    public void printConnections() {
+        for (Location l1 : validLocations) {
+            for (Location l2 : validLocations) {
+                if (l1.compareTo(l2) <= 0 && isConnected(l1, l2)) {
+                    System.out.println(l1 + " to " + l2 + " is connected.");
+                }
+            }
+        }
     }
 
     public void update() {
-        updatePendingBilateralConnections();
+//        updatePendingBilateralConnections();
         updateDirectConnections();
         updateIndirectConnections();
     }
 
     private void updateDirectConnections() {
-        for (Location l1 : validLocations)
+        for (Location l1 : validLocations) {
             for (Location l2 : validLocations) {
                 LocationPair.ConnectionType pendingConnectionType = pendingConnections.get(new LocationPair(l1, l2));
                 if (pendingConnectionType == LocationPair.ConnectionType.BILATERAL_ONE_WAY_CAN_PASS
@@ -107,6 +143,7 @@ public class Board {
                     connection.put(new LocationPair(l1, l2), false);
                 }
             }
+        }
     }
 
     private void updateIndirectConnections() {
@@ -121,56 +158,43 @@ public class Board {
         }
     }
 
-    private void updatePendingBilateralConnections() {
-        for (Location l1 : validLocations) {
-            for (Location l2 : validLocations) {
-                if (!l1.equals(l2)) {
-                    LocationPair.ConnectionType connectionType1 = pendingConnections.get(new LocationPair(l1, l2));
-                    LocationPair.ConnectionType connectionType2 = pendingConnections.get(new LocationPair(l2, l1));
-                    if (connectionType1 == LocationPair.ConnectionType.MONOLATERAL_OPEN) {
-                        if (connectionType2 == LocationPair.ConnectionType.MONOLATERAL_OPEN) {
-                            connect(l1, l2, LocationPair.ConnectionType.BILATERAL_OPEN);
-                            connect(l2, l1, LocationPair.ConnectionType.BILATERAL_OPEN);
-                        } else if (connectionType2 == LocationPair.ConnectionType.MONOLATERAL_OUT_ONLY) {
-                            connect(l1, l2, LocationPair.ConnectionType.BILATERAL_ONE_WAY_NO_PASS);
-                            connect(l2, l1, LocationPair.ConnectionType.BILATERAL_ONE_WAY_CAN_PASS);
-                        }
-                    } else if (connectionType1 == LocationPair.ConnectionType.MONOLATERAL_OUT_ONLY) {
-                        if (connectionType2 == LocationPair.ConnectionType.MONOLATERAL_OPEN) {
-                            connect(l1, l2, LocationPair.ConnectionType.BILATERAL_ONE_WAY_CAN_PASS);
-                            connect(l2, l1, LocationPair.ConnectionType.BILATERAL_ONE_WAY_NO_PASS);
-                        } else if (connectionType2 == LocationPair.ConnectionType.MONOLATERAL_OUT_ONLY) {
-                            connect(l1, l2, LocationPair.ConnectionType.BILATERAL_ONE_WAY_NO_PASS);
-                            connect(l2, l1, LocationPair.ConnectionType.BILATERAL_ONE_WAY_NO_PASS);
-                        }
-                    } else if (connectionType1 == LocationPair.ConnectionType.MONOLATERAL_CLOSED) {
-                        connect(l1, l2, LocationPair.ConnectionType.MONOLATERAL_CLOSED);
-                        if (connectionType2 == LocationPair.ConnectionType.BILATERAL_OPEN) {
-                            connect(l2, l1, LocationPair.ConnectionType.MONOLATERAL_OPEN);
-                        } else if (connectionType2 == LocationPair.ConnectionType.BILATERAL_ONE_WAY_CAN_PASS) {
-                            connect(l1, l2, LocationPair.ConnectionType.MONOLATERAL_OUT_ONLY);
-                        } else if (connectionType2 == LocationPair.ConnectionType.BILATERAL_ONE_WAY_NO_PASS) {
-                            connect(l1, l2, LocationPair.ConnectionType.MONOLATERAL_OUT_ONLY);
-                        }
-                    }
-                }
-            }
-        }
-    }
+//    private void updatePendingBilateralConnections() {
+//        for (Location l1 : validLocations) {
+//            for (Location l2 : validLocations) {
+//                if (!l1.equals(l2)) {
+//                    LocationPair.ConnectionType connectionType1 = pendingConnections.get(new LocationPair(l1, l2));
+//                    LocationPair.ConnectionType connectionType2 = pendingConnections.get(new LocationPair(l2, l1));
+//                    if (connectionType1 == LocationPair.ConnectionType.MONOLATERAL_OPEN) {
+//                        if (connectionType2 == LocationPair.ConnectionType.MONOLATERAL_OPEN) {
+//                            connect(l1, l2, LocationPair.ConnectionType.BILATERAL_OPEN);
+//                            connect(l2, l1, LocationPair.ConnectionType.BILATERAL_OPEN);
+//                        } else if (connectionType2 == LocationPair.ConnectionType.MONOLATERAL_OUT_ONLY) {
+//                            connect(l1, l2, LocationPair.ConnectionType.BILATERAL_ONE_WAY_NO_PASS);
+//                            connect(l2, l1, LocationPair.ConnectionType.BILATERAL_ONE_WAY_CAN_PASS);
+//                        }
+//                    } else if (connectionType1 == LocationPair.ConnectionType.MONOLATERAL_OUT_ONLY) {
+//                        if (connectionType2 == LocationPair.ConnectionType.MONOLATERAL_OPEN) {
+//                            connect(l1, l2, LocationPair.ConnectionType.BILATERAL_ONE_WAY_CAN_PASS);
+//                            connect(l2, l1, LocationPair.ConnectionType.BILATERAL_ONE_WAY_NO_PASS);
+//                        } else if (connectionType2 == LocationPair.ConnectionType.MONOLATERAL_OUT_ONLY) {
+//                            connect(l1, l2, LocationPair.ConnectionType.BILATERAL_ONE_WAY_NO_PASS);
+//                            connect(l2, l1, LocationPair.ConnectionType.BILATERAL_ONE_WAY_NO_PASS);
+//                        }
+//                    }
+////                    } else if (connectionType1 == LocationPair.ConnectionType.MONOLATERAL_CLOSED) {
+////                        if (connectionType2 == LocationPair.ConnectionType.BILATERAL_OPEN) {
+////                            connect(l2, l1, LocationPair.ConnectionType.MONOLATERAL_OPEN);
+////                        } else if (connectionType2 == LocationPair.ConnectionType.BILATERAL_ONE_WAY_CAN_PASS) {
+////                            connect(l2, l1, LocationPair.ConnectionType.MONOLATERAL_OUT_ONLY);
+////                        } else if (connectionType2 == LocationPair.ConnectionType.BILATERAL_ONE_WAY_NO_PASS) {
+////                            connect(l2, l1, LocationPair.ConnectionType.MONOLATERAL_OUT_ONLY);
+////                        }
+////                    }
+//                }
+//            }
+//        }
+//    }
 
-    private void disconnect(Location l1, Location l2) {
-        connection.put(new LocationPair(l1, l2), false);
-    }
-
-    public void printConnections() {
-        for (Location l1 : validLocations) {
-            for (Location l2 : validLocations) {
-                if (l1.compareTo(l2) < 0 && isConnected(l1, l2)) {
-                    System.out.println(l1 + " to " + l2 + " is connected.");
-                }
-            }
-        }
-    }
 
     public boolean putPiece(ChessPiece piece) {
         switch (piece.getType()) {
@@ -193,7 +217,7 @@ public class Board {
                 if (placeSingo(piece)) {
                     update();
                     return true;
-                };
+                }
             default:
                 return false;
         }
@@ -318,37 +342,31 @@ public class Board {
             return false;
         }
         boardMatrix[x][y][d] = null;
-        if (piece.getDirection().equals(ChessPiece.Direction.TRIGO_UP)) {
+        if (d == 1) {
             Location left = new Location(x, y, 0);
             if (left.isValidLocation()) {
                 disconnect(piece.getLocation(), left);
-                disconnect(left, piece.getLocation());
             }
             Location right = new Location(x - 1, y, 0);
             if (right.isValidLocation()) {
                 disconnect(piece.getLocation(), right);
-                disconnect(right, piece.getLocation());
             }
             Location down = new Location(x, y + 1, 0);
             if (down.isValidLocation()) {
                 disconnect(piece.getLocation(), down);
-                disconnect(down, piece.getLocation());
             }
         } else {
             Location left = new Location(x + 1, y, 1);
             if (left.isValidLocation()) {
                 disconnect(piece.getLocation(), left);
-                disconnect(left, piece.getLocation());
             }
             Location right = new Location(x, y, 1);
             if (right.isValidLocation()) {
                 disconnect(piece.getLocation(), right);
-                disconnect(right, piece.getLocation());
             }
             Location up = new Location(x, y - 1, 1);
             if (up.isValidLocation()) {
                 disconnect(piece.getLocation(), up);
-                disconnect(up, piece.getLocation());
             }
         }
         return true;
