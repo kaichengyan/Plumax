@@ -12,12 +12,20 @@ A board game, inspired by Saboteur and Chinese Checker. Created by Kyle and Cind
 
 
 ## The Board
-![Board](/../images/Board.png?raw=true)
+
+<p align="center">
+<img src="/../images/Board.png?raw=true"/>
+</p>
+
  - Plumax has a board similar to the Chinese checkers. The six nodes at the ends of the hexagram are starting/end points and should not have pieces on them. 
  - The players put pieces on the empty triangular areas on the board.
 
 
 ## The Pieces
+
+<p align="center">
+<img src="/../images/Pieces.png?raw=true"/>
+</p>
 
  - Every player will have four pieces in hand each turn. 
  - In each turn, the player puts a piece on the board or uses the destroyer to remove a piece on the board. 
@@ -25,15 +33,26 @@ A board game, inspired by Saboteur and Chinese Checker. Created by Kyle and Cind
 
 ### The Singo & The Trigo}
 
+<p align="center">
+<img src="/../images/Singo.png?raw=true"/> <img src="/../images/Trigo.png?raw=true"/>
+</p>
+
  - The Singo and the Trigo connects neighboring triangles on the board.
  - The player can decide which direction to put the Singo in. That is to say, the player can decide which triangles to connect.  
 
-
 ### The Oneway
+
+<p align="center">
+<img src="/../images/Oneway.png?raw=true"/>
+</p>
 
  - The Oneway is similar to the Trigo, but only allows "in" from one direction. The player can decide which side to allow ``in'' and which sides to allow ``out'' only.
 
 ### The Destroyer
+
+<p align="center">
+<img src="/../images/Destroyer.png?raw=true"/>
+</p>
 
  - The destroyer is pretty simple. Use it to remove any pieces on the board. 
 
