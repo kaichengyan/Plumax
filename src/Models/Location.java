@@ -1,6 +1,6 @@
 package Models;
 
-public class Location {
+public class Location implements Comparable<Location> {
 
     private int x;
     private int y;
@@ -25,7 +25,7 @@ public class Location {
     }
 
     public boolean isValidLocation() {
-        int t = Board.BOARD_SIZE / 4; // t = size of small triangles
+        int t = Board.BOARD_SIZE; // t = size of small triangles
         if (d != 0 && d != 1) return false;
         if (1 <= x && x <= t) {
             if (t+1<=y && y<=t+x-1) return true;
@@ -61,4 +61,15 @@ public class Location {
         return "(" + x + ", " + y + ", " + d + ")";
     }
 
+    @Override
+    public int compareTo(Location o) {
+        if (this.x - o.x != 0) {
+            return this.x - o.x;
+        } else if (this.y - o.y != 0) {
+            return this.y - o.y;
+        } else if (this.d - o.d != 0) {
+            return this.d - o.d;
+        }
+        return 0;
+    }
 }

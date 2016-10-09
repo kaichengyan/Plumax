@@ -5,9 +5,18 @@ public class LocationPair {
     private Location from;
     private Location to;
 
-    public LocationPair(Location key, Location value) {
-        this.from = key;
-        this.to = value;
+    public enum ConnectionType {
+        MONOLATERAL_OUT_ONLY,
+        MONOLATERAL_OPEN,
+        BILATERAL_OPEN,
+        BILATERAL_ONE_WAY_CAN_PASS,
+        BILATERAL_ONE_WAY_NO_PASS,
+        MONOLATERAL_CLOSED
+    }
+
+    public LocationPair(Location from, Location to) {
+        this.from = from;
+        this.to = to;
     }
 
     @Override

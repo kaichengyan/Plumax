@@ -61,6 +61,7 @@ public class PlumaxGame {
         System.out.println("The game starts now!");
         while (isGameOver().isEmpty()) {
             changeColor(i);
+            board.printConnections();
             System.out.println(players[i].getName() + " is playing.");
             players[i].drawPiece(Player.PLAYER_PIECE_NUM - players[i].getPieces().size());
             System.out.println("\tYour pieces are: " + players[i].getPieces());
@@ -90,6 +91,7 @@ public class PlumaxGame {
             ChessPiece.Direction direction = readDirection(input, type, location);
             if (players[i].putPiece(board, new ChessPiece(type, location, direction)))
                 System.out.println("Successful! ");
+            board.printConnections();
             i++;
             if (i == playerNum) {
                 i = 0;
@@ -240,7 +242,7 @@ public class PlumaxGame {
                 } else {
                     System.out.println("\t1) Lower-right");
                     System.out.println("\t2) Lower-left");
-                    System.out.println("\t3) Down");
+                    System.out.println("\t3) Up");
                     System.out.print("\t");
                     switch (input.nextInt()) {
                         case 1:
