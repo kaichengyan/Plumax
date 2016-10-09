@@ -113,7 +113,6 @@ public class Board {
                 || reverseConn == LocationPair.ConnectionType.BILATERAL_ONE_WAY_NO_PASS) {
             pendingConnections.put(new LocationPair(l2, l1), LocationPair.ConnectionType.MONOLATERAL_OUT_ONLY);
         }
-        updateDirectConnections();
     }
 
     public void printConnections() {
@@ -127,7 +126,6 @@ public class Board {
     }
 
     public void update() {
-//        updatePendingBilateralConnections();
         updateDirectConnections();
         updateIndirectConnections();
     }
@@ -157,44 +155,6 @@ public class Board {
             }
         }
     }
-
-//    private void updatePendingBilateralConnections() {
-//        for (Location l1 : validLocations) {
-//            for (Location l2 : validLocations) {
-//                if (!l1.equals(l2)) {
-//                    LocationPair.ConnectionType connectionType1 = pendingConnections.get(new LocationPair(l1, l2));
-//                    LocationPair.ConnectionType connectionType2 = pendingConnections.get(new LocationPair(l2, l1));
-//                    if (connectionType1 == LocationPair.ConnectionType.MONOLATERAL_OPEN) {
-//                        if (connectionType2 == LocationPair.ConnectionType.MONOLATERAL_OPEN) {
-//                            connect(l1, l2, LocationPair.ConnectionType.BILATERAL_OPEN);
-//                            connect(l2, l1, LocationPair.ConnectionType.BILATERAL_OPEN);
-//                        } else if (connectionType2 == LocationPair.ConnectionType.MONOLATERAL_OUT_ONLY) {
-//                            connect(l1, l2, LocationPair.ConnectionType.BILATERAL_ONE_WAY_NO_PASS);
-//                            connect(l2, l1, LocationPair.ConnectionType.BILATERAL_ONE_WAY_CAN_PASS);
-//                        }
-//                    } else if (connectionType1 == LocationPair.ConnectionType.MONOLATERAL_OUT_ONLY) {
-//                        if (connectionType2 == LocationPair.ConnectionType.MONOLATERAL_OPEN) {
-//                            connect(l1, l2, LocationPair.ConnectionType.BILATERAL_ONE_WAY_CAN_PASS);
-//                            connect(l2, l1, LocationPair.ConnectionType.BILATERAL_ONE_WAY_NO_PASS);
-//                        } else if (connectionType2 == LocationPair.ConnectionType.MONOLATERAL_OUT_ONLY) {
-//                            connect(l1, l2, LocationPair.ConnectionType.BILATERAL_ONE_WAY_NO_PASS);
-//                            connect(l2, l1, LocationPair.ConnectionType.BILATERAL_ONE_WAY_NO_PASS);
-//                        }
-//                    }
-////                    } else if (connectionType1 == LocationPair.ConnectionType.MONOLATERAL_CLOSED) {
-////                        if (connectionType2 == LocationPair.ConnectionType.BILATERAL_OPEN) {
-////                            connect(l2, l1, LocationPair.ConnectionType.MONOLATERAL_OPEN);
-////                        } else if (connectionType2 == LocationPair.ConnectionType.BILATERAL_ONE_WAY_CAN_PASS) {
-////                            connect(l2, l1, LocationPair.ConnectionType.MONOLATERAL_OUT_ONLY);
-////                        } else if (connectionType2 == LocationPair.ConnectionType.BILATERAL_ONE_WAY_NO_PASS) {
-////                            connect(l2, l1, LocationPair.ConnectionType.MONOLATERAL_OUT_ONLY);
-////                        }
-////                    }
-//                }
-//            }
-//        }
-//    }
-
 
     public boolean putPiece(ChessPiece piece) {
         switch (piece.getType()) {
