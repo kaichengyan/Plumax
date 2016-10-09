@@ -12,7 +12,7 @@ A board game, inspired by Saboteur and Chinese Checker. Created by Kyle and Cind
 
 
 ## The Board
-
+![Board](/../images/Board.png?raw=true)
  - Plumax has a board similar to the Chinese checkers. The six nodes at the ends of the hexagram are starting/end points and should not have pieces on them. 
  - The players put pieces on the empty triangular areas on the board.
 
