@@ -43,7 +43,7 @@ public class Board {
 
         for (Location l1 : validLocations) {
             for (Location l2 : validLocations) {
-                pendingConnections.put(new Location.LocationPair(l1, l2), ConnectionType.MONOLATERAL_CLOSED);
+                pendingConnections.put(new Location.LocationPair(l1, l2), ConnectionType.CLOSED);
                 boolean isConnected = false;
                 if (l1.equals(l2)) {
                     isConnected = true;
@@ -135,7 +135,7 @@ public class Board {
 
     public void disconnect(Location from, Location to) {
         if (isValidLocation(from) && isValidLocation(to)) {
-            pendingConnections.put(new Location.LocationPair(from, to), ConnectionType.MONOLATERAL_CLOSED);
+            pendingConnections.put(new Location.LocationPair(from, to), ConnectionType.CLOSED);
             ConnectionType reverseConn = pendingConnections.get(new Location.LocationPair(to, from));
             if (reverseConn == ConnectionType.BILATERAL_OPEN) {
                 pendingConnections.put(new Location.LocationPair(to, from), ConnectionType.MONOLATERAL_OPEN);
@@ -224,6 +224,6 @@ public class Board {
         BILATERAL_OPEN,
         BILATERAL_ONE_WAY_CAN_PASS,
         BILATERAL_ONE_WAY_NO_PASS,
-        MONOLATERAL_CLOSED
+        CLOSED
     }
 }
