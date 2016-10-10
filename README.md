@@ -46,7 +46,7 @@ A board game, inspired by Saboteur and Chinese Checker. Created by Kyle and Cind
 <img src="/../images/Oneway.png?raw=true"/>
 </p>
 
- - The Oneway is similar to the Trigo, but only allows "in" from one direction. The player can decide which side to allow ``in'' and which sides to allow ``out'' only.
+ - The Oneway is similar to the Trigo, but only allows "in" from one direction. The player can decide which side to allow "in" and which sides to allow "out" only.
 
 ### The Destroyer
 
