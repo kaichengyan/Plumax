@@ -31,7 +31,7 @@ A board game, inspired by Saboteur and Chinese Checker. Created by Kyle and Cind
  - In each turn, the player puts a piece on the board or uses the destroyer to remove a piece on the board. 
  - The player will draw pieces until he has four pieces when his turn begins.
 
-### The Singo & The Trigo}
+### The Singo & The Trigo
 
 <p align="center">
 <img src="/../images/Singo.png?raw=true"/> <img src="/../images/Trigo.png?raw=true"/>
