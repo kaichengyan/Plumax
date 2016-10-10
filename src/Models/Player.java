@@ -36,16 +36,45 @@ public class Player {
             return Piece.Type.TYPE_DESTROYER;
     }
 
-    public boolean putPiece(Board board, Piece piece) {
-        if (!pieces.contains(piece.getType())) {
-            return false;
+    public boolean putPiece(Scanner input, Board board) {
+        System.out.println("\tYour pieces are: " + getPieces());
+        Piece piece;
+        Piece.Type type;
+        while (!getPieces().contains(type = readType(input))) {
+            System.out.println("\tSorry. You don't have that piece.");
+        }
+        if (type == Piece.Type.TYPE_TRIGO) {
+            piece = new Trigo(input);
+        } else if (type == Piece.Type.TYPE_SINGO) {
+            piece = new Singo(input);
+        } else if (type == Piece.Type.TYPE_ONE_WAY) {
+            piece = new Oneway(input);
+        } else {
+            piece = new Destroyer(input);
         }
         if (piece.use(board)) {
-            pieces.remove(piece.getType());
             board.update();
             return true;
+        } else {
+            return false;
         }
-        return false;
+    }
+
+    private Piece.Type readType(Scanner input) {
+        System.out.print("\tWhat piece would you like to put? ");
+        String typeStr = input.next();
+        Piece.Type type;
+        if (typeStr.toLowerCase().startsWith("s"))
+            type = Piece.Type.TYPE_SINGO;
+        else if (typeStr.toLowerCase().startsWith("t"))
+            type = Piece.Type.TYPE_TRIGO;
+        else if (typeStr.toLowerCase().startsWith("o"))
+            type = Piece.Type.TYPE_ONE_WAY;
+        else if (typeStr.toLowerCase().startsWith("d"))
+            type = Piece.Type.TYPE_DESTROYER;
+        else
+            type = null;
+        return type;
     }
 
     public List<Piece.Type> getPieces() {
@@ -64,8 +93,19 @@ public class Player {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public enum Team {
+        TEAM_RED,
+        TEAM_BLUE,
+        TEAM_GREEN;
+    
+        @Override
+        public String toString() {
+            switch (this) {
+                case TEAM_RED: return "Player.Team RED";
+                case TEAM_BLUE: return "Player.Team BLUE";
+                case TEAM_GREEN: return "Player.Team GREEN";
+                default: return null;
+            }
+        }
     }
-
 }

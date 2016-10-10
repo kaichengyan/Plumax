@@ -1,6 +1,6 @@
 package Models;
 
-import java.util.Scanner;
+import java.util.*;
 
 abstract public class Piece {
 
@@ -42,8 +42,6 @@ abstract public class Piece {
     }
 
     abstract public boolean use(Board board);
-
-    abstract public Type getType();
 
     protected Location readLocation(Scanner input) {
         System.out.print("\tWhat location would you like to put it? ");

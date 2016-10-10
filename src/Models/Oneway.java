@@ -1,6 +1,6 @@
 package Models;
 
-import java.util.Scanner;
+import java.util.*;
 
 public class Oneway extends Piece {
 
@@ -32,19 +32,19 @@ public class Oneway extends Piece {
 
             switch (getDirection()) {
                 case ONE_WAY_UP_LEFT_IN:
-                    board.connect(location, left, LocationPair.ConnectionType.MONOLATERAL_OPEN);
-                    board.connect(location, right, LocationPair.ConnectionType.MONOLATERAL_OUT_ONLY);
-                    board.connect(location, down, LocationPair.ConnectionType.MONOLATERAL_OUT_ONLY);
+                    board.connect(location, left, Board.ConnectionType.MONOLATERAL_OPEN);
+                    board.connect(location, right, Board.ConnectionType.MONOLATERAL_OUT_ONLY);
+                    board.connect(location, down, Board.ConnectionType.MONOLATERAL_OUT_ONLY);
                     break;
                 case ONE_WAY_UP_RIGHT_IN:
-                    board.connect(location, right, LocationPair.ConnectionType.MONOLATERAL_OPEN);
-                    board.connect(location, left, LocationPair.ConnectionType.MONOLATERAL_OUT_ONLY);
-                    board.connect(location, down, LocationPair.ConnectionType.MONOLATERAL_OUT_ONLY);
+                    board.connect(location, right, Board.ConnectionType.MONOLATERAL_OPEN);
+                    board.connect(location, left, Board.ConnectionType.MONOLATERAL_OUT_ONLY);
+                    board.connect(location, down, Board.ConnectionType.MONOLATERAL_OUT_ONLY);
                     break;
                 case ONE_WAY_UP_DOWN_IN:
-                    board.connect(location, down, LocationPair.ConnectionType.MONOLATERAL_OPEN);
-                    board.connect(location, left, LocationPair.ConnectionType.MONOLATERAL_OUT_ONLY);
-                    board.connect(location, right, LocationPair.ConnectionType.MONOLATERAL_OUT_ONLY);
+                    board.connect(location, down, Board.ConnectionType.MONOLATERAL_OPEN);
+                    board.connect(location, left, Board.ConnectionType.MONOLATERAL_OUT_ONLY);
+                    board.connect(location, right, Board.ConnectionType.MONOLATERAL_OUT_ONLY);
                     break;
             }
         } else {
@@ -53,28 +53,23 @@ public class Oneway extends Piece {
             Location up = new Location(x, y - 1, 1);
             switch (getDirection()) {
                 case ONE_WAY_DOWN_LEFT_IN:
-                    board.connect(location, left, LocationPair.ConnectionType.MONOLATERAL_OPEN);
-                    board.connect(location, right, LocationPair.ConnectionType.MONOLATERAL_OUT_ONLY);
-                    board.connect(location, up, LocationPair.ConnectionType.MONOLATERAL_OUT_ONLY);
+                    board.connect(location, left, Board.ConnectionType.MONOLATERAL_OPEN);
+                    board.connect(location, right, Board.ConnectionType.MONOLATERAL_OUT_ONLY);
+                    board.connect(location, up, Board.ConnectionType.MONOLATERAL_OUT_ONLY);
                     break;
                 case ONE_WAY_DOWN_RIGHT_IN:
-                    board.connect(location, right, LocationPair.ConnectionType.MONOLATERAL_OPEN);
-                    board.connect(location, left, LocationPair.ConnectionType.MONOLATERAL_OUT_ONLY);
-                    board.connect(location, up, LocationPair.ConnectionType.MONOLATERAL_OUT_ONLY);
+                    board.connect(location, right, Board.ConnectionType.MONOLATERAL_OPEN);
+                    board.connect(location, left, Board.ConnectionType.MONOLATERAL_OUT_ONLY);
+                    board.connect(location, up, Board.ConnectionType.MONOLATERAL_OUT_ONLY);
                     break;
                 case ONE_WAY_DOWN_UP_IN:
-                    board.connect(location, up, LocationPair.ConnectionType.MONOLATERAL_OPEN);
-                    board.connect(location, left, LocationPair.ConnectionType.MONOLATERAL_OUT_ONLY);
-                    board.connect(location, right, LocationPair.ConnectionType.MONOLATERAL_OUT_ONLY);
+                    board.connect(location, up, Board.ConnectionType.MONOLATERAL_OPEN);
+                    board.connect(location, left, Board.ConnectionType.MONOLATERAL_OUT_ONLY);
+                    board.connect(location, right, Board.ConnectionType.MONOLATERAL_OUT_ONLY);
                     break;
             }
         }
         return true;
-    }
-
-    @Override
-    public Type getType() {
-        return Type.TYPE_ONE_WAY;
     }
 
     private Direction readDirection(Scanner input) {
@@ -92,7 +87,7 @@ public class Oneway extends Piece {
                 case 3:
                     return Piece.Direction.ONE_WAY_UP_DOWN_IN;
                 default:
-                    throw new IllegalArgumentException();
+                    return null;
             }
         } else {
             System.out.println("\t1) Lower-right");
@@ -107,7 +102,7 @@ public class Oneway extends Piece {
                 case 3:
                     return Piece.Direction.ONE_WAY_DOWN_UP_IN;
                 default:
-                    throw new IllegalArgumentException();
+                    return null;
             }
         }
     }

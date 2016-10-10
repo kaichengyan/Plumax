@@ -1,6 +1,6 @@
 package Models;
 
-import java.util.Scanner;
+import java.util.*;
 
 public class Singo extends Piece {
 
@@ -31,16 +31,16 @@ public class Singo extends Piece {
             Location down = new Location(x, y + 1, 0);
             switch (getDirection()) {
                 case SINGO_UP_DOWN_CLOSED:
-                    board.connect(location, left, LocationPair.ConnectionType.MONOLATERAL_OPEN);
-                    board.connect(location, right, LocationPair.ConnectionType.MONOLATERAL_OPEN);
+                    board.connect(location, left, Board.ConnectionType.MONOLATERAL_OPEN);
+                    board.connect(location, right, Board.ConnectionType.MONOLATERAL_OPEN);
                     break;
                 case SINGO_UP_LEFT_CLOSED:
-                    board.connect(location, right, LocationPair.ConnectionType.MONOLATERAL_OPEN);
-                    board.connect(location, down, LocationPair.ConnectionType.MONOLATERAL_OPEN);
+                    board.connect(location, right, Board.ConnectionType.MONOLATERAL_OPEN);
+                    board.connect(location, down, Board.ConnectionType.MONOLATERAL_OPEN);
                     break;
                 case SINGO_UP_RIGHT_CLOSED:
-                    board.connect(location, down, LocationPair.ConnectionType.MONOLATERAL_OPEN);
-                    board.connect(location, left, LocationPair.ConnectionType.MONOLATERAL_OPEN);
+                    board.connect(location, down, Board.ConnectionType.MONOLATERAL_OPEN);
+                    board.connect(location, left, Board.ConnectionType.MONOLATERAL_OPEN);
                     break;
             }
         } else {
@@ -49,25 +49,20 @@ public class Singo extends Piece {
             Location up = new Location(x, y - 1, 1);
             switch (getDirection()) {
                 case SINGO_DOWN_LEFT_CLOSED:
-                    board.connect(location, right, LocationPair.ConnectionType.MONOLATERAL_OPEN);
-                    board.connect(location, up, LocationPair.ConnectionType.MONOLATERAL_OPEN);
+                    board.connect(location, right, Board.ConnectionType.MONOLATERAL_OPEN);
+                    board.connect(location, up, Board.ConnectionType.MONOLATERAL_OPEN);
                     break;
                 case SINGO_DOWN_RIGHT_CLOSED:
-                    board.connect(location, up, LocationPair.ConnectionType.MONOLATERAL_OPEN);
-                    board.connect(location, left, LocationPair.ConnectionType.MONOLATERAL_OPEN);
+                    board.connect(location, up, Board.ConnectionType.MONOLATERAL_OPEN);
+                    board.connect(location, left, Board.ConnectionType.MONOLATERAL_OPEN);
                     break;
                 case SINGO_DOWN_UP_CLOSED:
-                    board.connect(location, left, LocationPair.ConnectionType.MONOLATERAL_OPEN);
-                    board.connect(location, right, LocationPair.ConnectionType.MONOLATERAL_OPEN);
+                    board.connect(location, left, Board.ConnectionType.MONOLATERAL_OPEN);
+                    board.connect(location, right, Board.ConnectionType.MONOLATERAL_OPEN);
                     break;
             }
         }
         return true;
-    }
-
-    @Override
-    public Type getType() {
-        return Type.TYPE_SINGO;
     }
 
     private Direction readDirection(Scanner input) {

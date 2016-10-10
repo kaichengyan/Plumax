@@ -1,6 +1,6 @@
 package Models;
 
-import java.util.Scanner;
+import java.util.*;
 
 public class Trigo extends Piece {
 
@@ -27,27 +27,18 @@ public class Trigo extends Piece {
             Location left = new Location(x, y, 0);
             Location right = new Location(x - 1, y, 0);
             Location down = new Location(x, y + 1, 0);
-            board.connect(getLocation(), down, LocationPair.ConnectionType.MONOLATERAL_OPEN);
-            board.connect(getLocation(), left, LocationPair.ConnectionType.MONOLATERAL_OPEN);
-            board.connect(getLocation(), right, LocationPair.ConnectionType.MONOLATERAL_OPEN);
+            board.connect(getLocation(), down, Board.ConnectionType.MONOLATERAL_OPEN);
+            board.connect(getLocation(), left, Board.ConnectionType.MONOLATERAL_OPEN);
+            board.connect(getLocation(), right, Board.ConnectionType.MONOLATERAL_OPEN);
         } else {
             Location left = new Location(x + 1, y, 1);
             Location right = new Location(x, y, 1);
             Location up = new Location(x, y - 1, 1);
-            board.connect(getLocation(), up, LocationPair.ConnectionType.MONOLATERAL_OPEN);
-            board.connect(getLocation(), left, LocationPair.ConnectionType.MONOLATERAL_OPEN);
-            board.connect(getLocation(), right, LocationPair.ConnectionType.MONOLATERAL_OPEN);
+            board.connect(getLocation(), up, Board.ConnectionType.MONOLATERAL_OPEN);
+            board.connect(getLocation(), left, Board.ConnectionType.MONOLATERAL_OPEN);
+            board.connect(getLocation(), right, Board.ConnectionType.MONOLATERAL_OPEN);
         }
         return true;
-    }
-
-    @Override
-    public Type getType() {
-        return Type.TYPE_TRIGO;
-    }
-
-    public Location getLocation() {
-        return location;
     }
 
 }

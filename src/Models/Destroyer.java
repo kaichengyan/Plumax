@@ -1,6 +1,6 @@
 package Models;
 
-import java.util.Scanner;
+import java.util.*;
 
 public class Destroyer extends Piece {
 
@@ -19,9 +19,6 @@ public class Destroyer extends Piece {
         int x = location.getX();
         int y = location.getY();
         int d = location.getD();
-        if (board.getBoardMatrix()[x][y][d] == null) {
-            return false;
-        }
         if (!board.isLocationRemovable(location)) {
             return false;
         }
@@ -44,8 +41,4 @@ public class Destroyer extends Piece {
         return true;
     }
 
-    @Override
-    public Type getType() {
-        return Type.TYPE_DESTROYER;
-    }
 }
