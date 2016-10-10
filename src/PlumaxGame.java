@@ -41,34 +41,25 @@ public class PlumaxGame {
             board.printConnections();
             System.out.println(players[i].getName() + " is playing.");
             players[i].drawPiece(Player.PLAYER_PIECE_NUM - players[i].getPieces().size());
-            System.out.println("\tYour pieces are: " + players[i].getPieces());
-            ChessPiece.PieceType type;
-            while(!players[i].getPieces().contains(type = readType(input))) {
-                System.out.println("\tSorry. You don't have that piece.");
-            }
-            Location location;
-            while (!(location = readLocation(input)).isValidLocation()) {
-                System.out.println("\tSorry. That is not a valid location.");
-            }
-            if (!(type == ChessPiece.PieceType.TYPE_DESTROYER)) {
-                if (!board.isLocationPuttable(location)) {
-                    System.out.println("\tSorry. That location has been occupied.");
-                    while (board.isLocationPuttable(location = readLocation(input))) {
-                        System.out.println("\tSorry. That location has been occupied.");
-                    }
+            Piece piece;
+            do {
+                System.out.println("\tYour pieces are: " + players[i].getPieces());
+                Piece.Type type;
+                while (!players[i].getPieces().contains(type = readType(input))) {
+                    System.out.println("\tSorry. You don't have that piece.");
                 }
-            } else {
-                if (!board.isLocationRemovable(location)) {
-                    System.out.println("\tSorry. That location has no piece on it.");
-                    while (!board.isLocationRemovable(location = readLocation(input))) {
-                        System.out.println("\tSorry. That location has been occupied.");
-                    }
+                if (type == Piece.Type.TYPE_TRIGO) {
+                    piece = new Trigo(input);
+                } else if (type == Piece.Type.TYPE_SINGO) {
+                    piece = new Singo(input);
+                } else if (type == Piece.Type.TYPE_ONE_WAY) {
+                    piece = new Oneway(input);
+                } else {
+                    piece = new Destroyer(input);
                 }
-            }
-            ChessPiece.Direction direction = readDirection(input, type, location);
-            if (players[i].putPiece(board, new ChessPiece(type, location, direction)))
-                System.out.println("Successful! ");
-            board.printConnections();
+            } while (!players[i].putPiece(board, piece));
+            System.out.println("Success!");
+            System.out.println();
             i++;
             if (i == playerNum) {
                 i = 0;
@@ -80,7 +71,6 @@ public class PlumaxGame {
         System.out.println("Game is over. \nWinner(s): " + isGameOver() +"\n Congratulations!");
 
     }
-
 
     private Set<Team> isGameOver() {
         Set<Team> winningTeams = new HashSet<>();
@@ -146,102 +136,19 @@ public class PlumaxGame {
         }
     }
 
-    private ChessPiece.PieceType readType(Scanner input) {
+    private Piece.Type readType(Scanner input) {
         System.out.print("\tWhat piece would you like to put? ");
         String typeStr = input.next();
         if (typeStr.toLowerCase().startsWith("s"))
-            return ChessPiece.PieceType.TYPE_SINGO;
+            return Piece.Type.TYPE_SINGO;
         else if (typeStr.toLowerCase().startsWith("t"))
-            return ChessPiece.PieceType.TYPE_TRIGO;
+            return Piece.Type.TYPE_TRIGO;
         else if (typeStr.toLowerCase().startsWith("o"))
-            return ChessPiece.PieceType.TYPE_ONE_WAY;
+            return Piece.Type.TYPE_ONE_WAY;
         else if (typeStr.toLowerCase().startsWith("d"))
-            return ChessPiece.PieceType.TYPE_DESTROYER;
+            return Piece.Type.TYPE_DESTROYER;
         else
             return null;
-    }
-
-    private Location readLocation(Scanner input) {
-        System.out.print("\tWhat location would you like to put it? ");
-        int x = input.nextInt();
-        int y = input.nextInt();
-        int d = input.nextInt();
-        return new Location(x, y, d);
-    }
-
-    private ChessPiece.Direction readDirection(Scanner input,
-                                               ChessPiece.PieceType type,
-                                               Location location) {
-        switch (type) {
-            case TYPE_SINGO:
-                System.out.println("\tWhere do you want the closed side? ");
-                if (location.getD() == 1) {
-                    System.out.println("\t1) Upper-right");
-                    System.out.println("\t2) Upper-left");
-                    System.out.println("\t3) Down");
-                    System.out.print("\t");
-                    switch (input.nextInt()) {
-                        case 1:
-                            return ChessPiece.Direction.SINGO_UP_RIGHT_CLOSED;
-                        case 2:
-                            return ChessPiece.Direction.SINGO_UP_LEFT_CLOSED;
-                        case 3:
-                            return ChessPiece.Direction.SINGO_UP_DOWN_CLOSED;
-                    }
-                } else {
-                    System.out.println("\t1) Lower-right");
-                    System.out.println("\t2) Lower-left");
-                    System.out.println("\t3) Up");
-                    System.out.print("\t");
-                    switch (input.nextInt()) {
-                        case 1:
-                            return ChessPiece.Direction.SINGO_DOWN_RIGHT_CLOSED;
-                        case 2:
-                            return ChessPiece.Direction.SINGO_DOWN_LEFT_CLOSED;
-                        case 3:
-                            return ChessPiece.Direction.SINGO_DOWN_UP_CLOSED;
-                    }
-                }
-            case TYPE_TRIGO:
-                if (location.getD() == 1) {
-                    return ChessPiece.Direction.TRIGO_UP;
-                } else {
-                    return ChessPiece.Direction.TRIGO_DOWN;
-                }
-            case TYPE_ONE_WAY:
-                System.out.println("\tWhere do you want the one-way-in path? ");
-                if (location.getD() == 1) {
-                    System.out.println("\t1) Upper-right");
-                    System.out.println("\t2) Upper-left");
-                    System.out.println("\t3) Down");
-                    System.out.print("\t");
-                    switch (input.nextInt()) {
-                        case 1:
-                            return ChessPiece.Direction.ONE_WAY_UP_RIGHT_IN;
-                        case 2:
-                            return ChessPiece.Direction.ONE_WAY_UP_LEFT_IN;
-                        case 3:
-                            return ChessPiece.Direction.ONE_WAY_UP_DOWN_IN;
-                    }
-                } else {
-                    System.out.println("\t1) Lower-right");
-                    System.out.println("\t2) Lower-left");
-                    System.out.println("\t3) Up");
-                    System.out.print("\t");
-                    switch (input.nextInt()) {
-                        case 1:
-                            return ChessPiece.Direction.ONE_WAY_DOWN_RIGHT_IN;
-                        case 2:
-                            return ChessPiece.Direction.ONE_WAY_DOWN_LEFT_IN;
-                        case 3:
-                            return ChessPiece.Direction.ONE_WAY_DOWN_UP_IN;
-                    }
-                }
-            case TYPE_DESTROYER:
-                return ChessPiece.Direction.DESTROYER;
-            default:
-                return null;
-        }
     }
 
     private void changeColor(int currPlayer) {

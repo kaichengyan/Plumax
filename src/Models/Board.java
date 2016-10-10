@@ -5,7 +5,7 @@ public class Board {
 
     public static final int BOARD_SIZE = 1; // Should be any positive integer.
 
-    private ChessPiece[][][] boardMatrix;
+    private Piece[][][] boardMatrix;
     private Map<LocationPair, Boolean> connection;
     private Map<LocationPair, LocationPair.ConnectionType> pendingConnections;
     private Set<Location> validLocations;
@@ -24,7 +24,7 @@ public class Board {
     private static final Location BLUE_END_NEXT = new Location(BOARD_SIZE * 4 - 1, BOARD_SIZE * 3, 0);
 
     public Board() {
-        boardMatrix = new ChessPiece[BOARD_SIZE * 4+ 1][BOARD_SIZE * 4 + 1][2];
+        boardMatrix = new Piece[BOARD_SIZE * 4+ 1][BOARD_SIZE * 4 + 1][2];
         validLocations = new HashSet<>();
         connection = new HashMap<>();
         pendingConnections = new HashMap<>();
@@ -63,6 +63,17 @@ public class Board {
 
     }
 
+    public Piece[][][] getBoardMatrix() {
+        return boardMatrix;
+    }
+
+    public void setBoardMatrix(Location location, Piece piece) {
+        int x = location.getX();
+        int y = location.getY();
+        int d = location.getD();
+        boardMatrix[x][y][d] = piece;
+    }
+
     private boolean isLocationEnds(Location location) {
         return location.equals(RED_START)
                 || location.equals(RED_END)
@@ -90,7 +101,7 @@ public class Board {
         return connection.get(new LocationPair(from, to));
     }
 
-    private void connect(Location from, Location to, LocationPair.ConnectionType type) {
+    public void connect(Location from, Location to, LocationPair.ConnectionType type) {
         if (from.isValidLocation() && to.isValidLocation()) {
             LocationPair.ConnectionType reverseConn = pendingConnections.get(new LocationPair(to, from));
             pendingConnections.put(new LocationPair(from, to), type);
@@ -120,10 +131,9 @@ public class Board {
         }
     }
 
-    private void disconnect(Location from, Location to) {
+    public void disconnect(Location from, Location to) {
         if (from.isValidLocation() && to.isValidLocation()) {
             pendingConnections.put(new LocationPair(from, to), LocationPair.ConnectionType.MONOLATERAL_CLOSED);
-            // from closes. update pending connections to->from.
             LocationPair.ConnectionType reverseConn = pendingConnections.get(new LocationPair(to, from));
             if (reverseConn == LocationPair.ConnectionType.BILATERAL_OPEN) {
                 pendingConnections.put(new LocationPair(to, from), LocationPair.ConnectionType.MONOLATERAL_OPEN);
@@ -175,204 +185,4 @@ public class Board {
             }
         }
     }
-
-    public boolean putPiece(ChessPiece piece) {
-        switch (piece.getType()) {
-            case TYPE_TRIGO:
-                if (placeTrigo(piece)) {
-                    update();
-                    return true;
-                }
-            case TYPE_DESTROYER:
-                if (useDestroyer(piece)) {
-                    update();
-                    return true;
-                }
-            case TYPE_ONE_WAY:
-                if (placeOneWay(piece)) {
-                    update();
-                    return true;
-                }
-            case TYPE_SINGO:
-                if (placeSingo(piece)) {
-                    update();
-                    return true;
-                }
-            default:
-                return false;
-        }
-    }
-
-    private boolean placeSingo(ChessPiece piece) {
-        int x = piece.getLocation().getX();
-        int y = piece.getLocation().getY();
-        int d = piece.getLocation().getD();
-        Location location = piece.getLocation();
-        ChessPiece.Direction direction = piece.getDirection();
-        if (boardMatrix[x][y][d] != null) {
-            return false;
-        }
-        boardMatrix[x][y][d] = piece;
-        if (direction == ChessPiece.Direction.SINGO_UP_DOWN_CLOSED
-                || direction == ChessPiece.Direction.SINGO_UP_LEFT_CLOSED
-                || direction == ChessPiece.Direction.SINGO_UP_RIGHT_CLOSED) {
-            Location left = new Location(x, y, 0);
-            Location right = new Location(x - 1, y, 0);
-            Location down = new Location(x, y + 1, 0);
-            switch (piece.getDirection()) {
-                case SINGO_UP_DOWN_CLOSED:
-                    connect(location, left, LocationPair.ConnectionType.MONOLATERAL_OPEN);
-                    connect(location, right, LocationPair.ConnectionType.MONOLATERAL_OPEN);
-                    break;
-                case SINGO_UP_LEFT_CLOSED:
-                    connect(location, right, LocationPair.ConnectionType.MONOLATERAL_OPEN);
-                    connect(location, down, LocationPair.ConnectionType.MONOLATERAL_OPEN);
-                    break;
-                case SINGO_UP_RIGHT_CLOSED:
-                    connect(location, down, LocationPair.ConnectionType.MONOLATERAL_OPEN);
-                    connect(location, left, LocationPair.ConnectionType.MONOLATERAL_OPEN);
-                    break;
-            }
-        } else {
-            Location left = new Location(x + 1, y, 1);
-            Location right = new Location(x, y, 1);
-            Location up = new Location(x, y - 1, 1);
-            switch (piece.getDirection()) {
-                case SINGO_DOWN_LEFT_CLOSED:
-                    connect(location, right, LocationPair.ConnectionType.MONOLATERAL_OPEN);
-                    connect(location, up, LocationPair.ConnectionType.MONOLATERAL_OPEN);
-                    break;
-                case SINGO_DOWN_RIGHT_CLOSED:
-                    connect(location, up, LocationPair.ConnectionType.MONOLATERAL_OPEN);
-                    connect(location, left, LocationPair.ConnectionType.MONOLATERAL_OPEN);
-                    break;
-                case SINGO_DOWN_UP_CLOSED:
-                    connect(location, left, LocationPair.ConnectionType.MONOLATERAL_OPEN);
-                    connect(location, right, LocationPair.ConnectionType.MONOLATERAL_OPEN);
-                    break;
-            }
-        }
-        return true;
-    }
-
-    private boolean placeTrigo(ChessPiece piece) {
-        int x = piece.getLocation().getX();
-        int y = piece.getLocation().getY();
-        int d = piece.getLocation().getD();
-        if (boardMatrix[x][y][d] != null) {
-            return false;
-        }
-        boardMatrix[x][y][d] = piece;
-        if (piece.getDirection().equals(ChessPiece.Direction.TRIGO_UP)) {
-            Location left = new Location(x, y, 0);
-            Location right = new Location(x - 1, y, 0);
-            Location down = new Location(x, y + 1, 0);
-            connect(piece.getLocation(), down, LocationPair.ConnectionType.MONOLATERAL_OPEN);
-            connect(piece.getLocation(), left, LocationPair.ConnectionType.MONOLATERAL_OPEN);
-            connect(piece.getLocation(), right, LocationPair.ConnectionType.MONOLATERAL_OPEN);
-        } else {
-            Location left = new Location(x + 1, y, 1);
-            Location right = new Location(x, y, 1);
-            Location up = new Location(x, y - 1, 1);
-            connect(piece.getLocation(), up, LocationPair.ConnectionType.MONOLATERAL_OPEN);
-            connect(piece.getLocation(), left, LocationPair.ConnectionType.MONOLATERAL_OPEN);
-            connect(piece.getLocation(), right, LocationPair.ConnectionType.MONOLATERAL_OPEN);
-        }
-        return true;
-    }
-
-    private boolean placeOneWay(ChessPiece piece) {
-        int x = piece.getLocation().getX();
-        int y = piece.getLocation().getY();
-        int d = piece.getLocation().getD();
-        Location location = piece.getLocation();
-        ChessPiece.Direction direction = piece.getDirection();
-        if (boardMatrix[x][y][d] != null) {
-            return false;
-        }
-        boardMatrix[x][y][d] = piece;
-        if (direction == ChessPiece.Direction.ONE_WAY_UP_LEFT_IN
-                || direction == ChessPiece.Direction.ONE_WAY_UP_RIGHT_IN
-                || direction == ChessPiece.Direction.ONE_WAY_UP_DOWN_IN) {
-            Location left = new Location(x, y, 0);
-            Location right = new Location(x - 1, y, 0);
-            Location down = new Location(x, y + 1, 0);
-
-            switch (piece.getDirection()) {
-                case ONE_WAY_UP_LEFT_IN:
-                    connect(location, left, LocationPair.ConnectionType.MONOLATERAL_OPEN);
-                    connect(location, right, LocationPair.ConnectionType.MONOLATERAL_OUT_ONLY);
-                    connect(location, down, LocationPair.ConnectionType.MONOLATERAL_OUT_ONLY);
-                    break;
-                case ONE_WAY_UP_RIGHT_IN:
-                    connect(location, right, LocationPair.ConnectionType.MONOLATERAL_OPEN);
-                    connect(location, left, LocationPair.ConnectionType.MONOLATERAL_OUT_ONLY);
-                    connect(location, down, LocationPair.ConnectionType.MONOLATERAL_OUT_ONLY);
-                    break;
-                case ONE_WAY_UP_DOWN_IN:
-                    connect(location, down, LocationPair.ConnectionType.MONOLATERAL_OPEN);
-                    connect(location, left, LocationPair.ConnectionType.MONOLATERAL_OUT_ONLY);
-                    connect(location, right, LocationPair.ConnectionType.MONOLATERAL_OUT_ONLY);
-                    break;
-            }
-        } else {
-            Location left = new Location(x + 1, y, 1);
-            Location right = new Location(x, y, 1);
-            Location up = new Location(x, y - 1, 1);
-            switch (piece.getDirection()) {
-                case ONE_WAY_DOWN_LEFT_IN:
-                    connect(location, left, LocationPair.ConnectionType.MONOLATERAL_OPEN);
-                    connect(location, right, LocationPair.ConnectionType.MONOLATERAL_OUT_ONLY);
-                    connect(location, up, LocationPair.ConnectionType.MONOLATERAL_OUT_ONLY);
-                    break;
-                case ONE_WAY_DOWN_RIGHT_IN:
-                    connect(location, right, LocationPair.ConnectionType.MONOLATERAL_OPEN);
-                    connect(location, left, LocationPair.ConnectionType.MONOLATERAL_OUT_ONLY);
-                    connect(location, up, LocationPair.ConnectionType.MONOLATERAL_OUT_ONLY);
-                    break;
-                case ONE_WAY_DOWN_UP_IN:
-                    connect(location, up, LocationPair.ConnectionType.MONOLATERAL_OPEN);
-                    connect(location, left, LocationPair.ConnectionType.MONOLATERAL_OUT_ONLY);
-                    connect(location, right, LocationPair.ConnectionType.MONOLATERAL_OUT_ONLY);
-                    break;
-            }
-        }
-        return true;
-    }
-
-    private boolean useDestroyer(ChessPiece piece) {
-        Location location = piece.getLocation();
-        int x = location.getX();
-        int y = location.getY();
-        int d = location.getD();
-        if (boardMatrix[x][y][d] == null) {
-            return false;
-        }
-        if (location == RED_START
-                || location == RED_END
-                || location == BLUE_START
-                || location == BLUE_END
-                || location == GREEN_START
-                || location == GREEN_END) {
-            return false;
-        }
-        boardMatrix[x][y][d] = null;
-        if (d == 1) {
-            Location left = new Location(x, y, 0);
-            Location right = new Location(x - 1, y, 0);
-            Location down = new Location(x, y + 1, 0);
-            disconnect(location, left);
-            disconnect(location, right);
-            disconnect(location, down);
-        } else {
-            Location left = new Location(x + 1, y, 1);
-            Location right = new Location(x, y, 1);
-            Location up = new Location(x, y - 1, 1);
-            disconnect(location, left);
-            disconnect(location, right);
-            disconnect(location, up);
-        }
-        return true;
-    }
-
 }
