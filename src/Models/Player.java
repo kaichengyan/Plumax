@@ -6,12 +6,6 @@ public class Player {
 
     public static final int PLAYER_PIECE_NUM = 4;
 
-    public enum Team {
-        TEAM_RED,
-        TEAM_GREEN,
-        TEAM_BLUE
-    }
-
     private Team team;
     private String name;
     private List<ChessPiece.PieceType> pieces;

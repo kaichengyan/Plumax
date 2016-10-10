@@ -10,7 +10,17 @@ public class ChessPiece {
         TYPE_SINGO,
         TYPE_TRIGO,
         TYPE_DESTROYER,
-        TYPE_ONE_WAY
+        TYPE_ONE_WAY;
+        @Override
+        public String toString() {
+            switch(this) {
+                case TYPE_SINGO: return "Singo";
+                case TYPE_TRIGO: return "Trigo";
+                case TYPE_ONE_WAY: return "Oneway";
+                case TYPE_DESTROYER: return "Destroyer";
+                default: throw new IllegalArgumentException();
+            }
+        }
     }
 
     public enum Direction {

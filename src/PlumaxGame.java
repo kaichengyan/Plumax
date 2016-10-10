@@ -21,43 +21,20 @@ public class PlumaxGame {
     private Board board;
 
     public PlumaxGame(int playerNum) {
-//        if (playerNum < 2 || playerNum > 6 || playerNum == 5) {
-//            throw new IllegalArgumentException("Models.Player number must be 2, 3 " +
-//                    "4, 6.");
-//        }
-        if (playerNum != 3) {
-            throw new IllegalArgumentException("Now we only support three-" +
-                    "player mode.");
+        if (playerNum < 2 || playerNum > 6 || playerNum == 5) {
+            throw new IllegalArgumentException("Player number must be 2, 3, 4 or 6.");
         }
         this.playerNum = playerNum;
         this.players = new Player[MAX_PLAYER_NUM];
     }
 
     public void play(Scanner input) {
-        board = new Board();
-        System.out.println("The board has been created.");
-        initPlayers(input);
-        System.out.println(playerNum + " players have been initialized.");
-        System.out.println();
-        assignTeam();
-        for (int i = 0; i < playerNum; i++) {
-            Player.Team currPlayerTeam = players[i].getTeam();
-            switch (currPlayerTeam) {
-                case TEAM_RED:
-                    System.out.println(ANSI_RED + players[i].getName() + " is in Team RED.");
-                    break;
-                case TEAM_BLUE:
-                    System.out.println(ANSI_BLUE + players[i].getName() + " is in Team BLUE.");
-                    break;
-                case TEAM_GREEN:
-                    System.out.println(ANSI_GREEN + players[i].getName() + " is in Team GREEN.");
-                    break;
-                default:
-                    break;
-            }
-        }
-        System.out.println(ANSI_BLACK);
+
+        // Initialize board and players
+        initialize(input);
+
         int i = 0;
+        // Game
         System.out.println("The game starts now!");
         while (isGameOver().isEmpty()) {
             changeColor(i);
@@ -74,16 +51,16 @@ public class PlumaxGame {
                 System.out.println("\tSorry. That is not a valid location.");
             }
             if (!(type == ChessPiece.PieceType.TYPE_DESTROYER)) {
-                if (board.isLocationOccupied(location)) {
+                if (!board.isLocationPuttable(location)) {
                     System.out.println("\tSorry. That location has been occupied.");
-                    while (board.isLocationOccupied(location = readLocation(input))) {
+                    while (board.isLocationPuttable(location = readLocation(input))) {
                         System.out.println("\tSorry. That location has been occupied.");
                     }
                 }
             } else {
-                if (!board.isLocationOccupied(location)) {
+                if (!board.isLocationRemovable(location)) {
                     System.out.println("\tSorry. That location has no piece on it.");
-                    while (!board.isLocationOccupied(location = readLocation(input))) {
+                    while (!board.isLocationRemovable(location = readLocation(input))) {
                         System.out.println("\tSorry. That location has been occupied.");
                     }
                 }
@@ -97,65 +74,74 @@ public class PlumaxGame {
                 i = 0;
             }
         }
+
+        // Game is over. Print winners.
         changeColor(-1);
-        System.out.println("Game is over. \nWinner(s): " + isGameOver());
+        System.out.println("Game is over. \nWinner(s): " + isGameOver() +"\n Congratulations!");
+
     }
 
-    private void distributePieces() {
-        for (int i = 0; i < playerNum; i++) {
-            players[i].drawPiece(Player.PLAYER_PIECE_NUM);
-        }
-    }
 
-    private Set<Player.Team> isGameOver() {
-        Set<Player.Team> winningTeams = new HashSet<>();
+    private Set<Team> isGameOver() {
+        Set<Team> winningTeams = new HashSet<>();
         if (board.isConnected(Board.RED_START, Board.RED_END)) {
-            winningTeams.add(Player.Team.TEAM_RED);
+            winningTeams.add(Team.TEAM_RED);
         }
         if (board.isConnected(Board.BLUE_START, Board.BLUE_END)) {
-            winningTeams.add(Player.Team.TEAM_BLUE);
+            winningTeams.add(Team.TEAM_BLUE);
         }
         if (board.isConnected(Board.GREEN_START, Board.GREEN_END)) {
-            winningTeams.add(Player.Team.TEAM_GREEN);
+            winningTeams.add(Team.TEAM_GREEN);
         }
         return winningTeams;
     }
 
-    private void initPlayers(Scanner input) {
+    private void initialize(Scanner input) {
+        board = new Board();
+        System.out.println("The board has been created.");
+
         for (int i = 0; i < playerNum; i++) {
-            System.out.print("Player " + (i+1) + " name: [Player " + (i+1) + "] ");
+            System.out.print("Player " + (i+1) + " name: [Default: Player " + (i+1) + "] ");
             String playerName = input.nextLine();
             if (playerName.isEmpty()) {
                 playerName = "Player " + (i+1);
             }
             players[i] = new Player(playerName);
         }
+        assignTeam();
+        for (int i = 0; i < playerNum; i++) {
+            changeColor(i);
+            System.out.println(players[i].getName() + " is in " + players[i].getTeam().getTeamDescription() + ".");
+            changeColor(-1);
+        }
+        System.out.println(playerNum + " players have been initialized.");
+        System.out.println();
     }
 
     private void assignTeam() {
         switch (playerNum) {
             case 2:
-                players[0].setTeam(Player.Team.TEAM_RED);
-                players[1].setTeam(Player.Team.TEAM_BLUE);
+                players[0].setTeam(Team.TEAM_RED);
+                players[1].setTeam(Team.TEAM_BLUE);
                 break;
             case 3:
-                players[0].setTeam(Player.Team.TEAM_RED);
-                players[1].setTeam(Player.Team.TEAM_BLUE);
-                players[2].setTeam(Player.Team.TEAM_GREEN);
+                players[0].setTeam(Team.TEAM_RED);
+                players[1].setTeam(Team.TEAM_BLUE);
+                players[2].setTeam(Team.TEAM_GREEN);
                 break;
             case 4:
-                players[0].setTeam(Player.Team.TEAM_RED);
-                players[1].setTeam(Player.Team.TEAM_RED);
-                players[2].setTeam(Player.Team.TEAM_BLUE);
-                players[3].setTeam(Player.Team.TEAM_BLUE);
+                players[0].setTeam(Team.TEAM_RED);
+                players[1].setTeam(Team.TEAM_RED);
+                players[2].setTeam(Team.TEAM_BLUE);
+                players[3].setTeam(Team.TEAM_BLUE);
                 break;
             case 6:
-                players[0].setTeam(Player.Team.TEAM_RED);
-                players[1].setTeam(Player.Team.TEAM_RED);
-                players[2].setTeam(Player.Team.TEAM_BLUE);
-                players[3].setTeam(Player.Team.TEAM_BLUE);
-                players[4].setTeam(Player.Team.TEAM_GREEN);
-                players[5].setTeam(Player.Team.TEAM_GREEN);
+                players[0].setTeam(Team.TEAM_RED);
+                players[1].setTeam(Team.TEAM_RED);
+                players[2].setTeam(Team.TEAM_BLUE);
+                players[3].setTeam(Team.TEAM_BLUE);
+                players[4].setTeam(Team.TEAM_GREEN);
+                players[5].setTeam(Team.TEAM_GREEN);
                 break;
         }
     }
@@ -188,8 +174,7 @@ public class PlumaxGame {
                                                Location location) {
         switch (type) {
             case TYPE_SINGO:
-                System.out.println("\tWhere do you want the closed " +
-                        "side? ");
+                System.out.println("\tWhere do you want the closed side? ");
                 if (location.getD() == 1) {
                     System.out.println("\t1) Upper-right");
                     System.out.println("\t2) Upper-left");
@@ -224,8 +209,7 @@ public class PlumaxGame {
                     return ChessPiece.Direction.TRIGO_DOWN;
                 }
             case TYPE_ONE_WAY:
-                System.out.println("\tWhere do you want the one-way-in " +
-                        "path? ");
+                System.out.println("\tWhere do you want the one-way-in path? ");
                 if (location.getD() == 1) {
                     System.out.println("\t1) Upper-right");
                     System.out.println("\t2) Upper-left");
@@ -262,19 +246,19 @@ public class PlumaxGame {
 
     private void changeColor(int currPlayer) {
         if (currPlayer == -1) {
-            System.out.println(ANSI_BLACK);
+            System.out.print(ANSI_RESET);
             return;
         }
-        Player.Team currPlayerTeam = players[currPlayer].getTeam();
+        Team currPlayerTeam = players[currPlayer].getTeam();
         switch (currPlayerTeam) {
             case TEAM_RED:
-                System.out.println(ANSI_RED);
+                System.out.print(ANSI_RED);
                 break;
             case TEAM_BLUE:
-                System.out.println(ANSI_BLUE);
+                System.out.print(ANSI_BLUE);
                 break;
             case TEAM_GREEN:
-                System.out.println(ANSI_GREEN);
+                System.out.print(ANSI_GREEN);
                 break;
             default:
                 break;
