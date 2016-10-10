@@ -4,6 +4,8 @@ import java.util.*;
 
 public class Oneway extends Piece {
 
+    private Direction direction;
+    
     public Oneway(Location location, Direction direction) {
         this.location = location;
         this.direction = direction;
@@ -29,8 +31,7 @@ public class Oneway extends Piece {
             Location left = new Location(x, y, 0);
             Location right = new Location(x - 1, y, 0);
             Location down = new Location(x, y + 1, 0);
-
-            switch (getDirection()) {
+            switch (direction) {
                 case ONE_WAY_UP_LEFT_IN:
                     board.connect(location, left, Board.ConnectionType.MONOLATERAL_OPEN);
                     board.connect(location, right, Board.ConnectionType.MONOLATERAL_OUT_ONLY);
@@ -51,7 +52,7 @@ public class Oneway extends Piece {
             Location left = new Location(x + 1, y, 1);
             Location right = new Location(x, y, 1);
             Location up = new Location(x, y - 1, 1);
-            switch (getDirection()) {
+            switch (direction) {
                 case ONE_WAY_DOWN_LEFT_IN:
                     board.connect(location, left, Board.ConnectionType.MONOLATERAL_OPEN);
                     board.connect(location, right, Board.ConnectionType.MONOLATERAL_OUT_ONLY);

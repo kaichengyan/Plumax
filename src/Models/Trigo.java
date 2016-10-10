@@ -6,12 +6,10 @@ public class Trigo extends Piece {
 
     public Trigo(Location location) {
         this.location = location;
-        this.direction = Direction.TRIGO;
     }
 
     public Trigo(Scanner input) {
         this.location = readLocation(input);
-        this.direction = Direction.TRIGO;
     }
 
     @Override

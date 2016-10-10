@@ -16,7 +16,7 @@ public class PlumaxGame {
 
     public PlumaxGame(int playerNum) {
         if (playerNum < 2 || playerNum > 6 || playerNum == 5) {
-            throw new IllegalArgumentException("Models.Player number must be 2, 3, 4 or 6.");
+            throw new IllegalArgumentException("Player number must be 2, 3, 4 or 6.");
         }
         this.playerNum = playerNum;
         this.players = new Player[MAX_PLAYER_NUM];
@@ -33,12 +33,15 @@ public class PlumaxGame {
             board.printConnections();
             System.out.println(players[i].getName() + " is playing.");
             players[i].drawPiece(Player.PLAYER_PIECE_NUM - players[i].getPieces().size());
-            players[i].putPiece(input, board);
-            System.out.println("Thank you. The piece has been put on the board. ");
-            System.out.println();
-            i++;
-            if (i == playerNum) {
-                i = 0;
+            if (players[i].putPiece(input, board)) {
+                System.out.println("Thank you. The piece has been put on the board. ");
+                System.out.println();
+                i++;
+                if (i == playerNum) {
+                    i = 0;
+                }
+            } else {
+                System.out.println("Uh-oh. You can't put it there. Try again.");
             }
         }
         // Game is over. Print winners.
@@ -56,10 +59,10 @@ public class PlumaxGame {
         System.out.println("The board has been created.");
 
         for (int i = 0; i < playerNum; i++) {
-            System.out.print("Models.Player " + (i+1) + " name: [Default: Models.Player " + (i+1) + "] ");
+            System.out.print("Player " + (i+1) + " name: [Player " + (i+1) + "] ");
             String playerName = input.nextLine();
             if (playerName.isEmpty()) {
-                playerName = "Models.Player " + (i+1);
+                playerName = "Player " + (i+1);
             }
             players[i] = new Player(playerName);
         }
@@ -88,16 +91,16 @@ public class PlumaxGame {
                 break;
             case 4:
                 players[0].setTeam(Player.Team.TEAM_RED);
-                players[1].setTeam(Player.Team.TEAM_RED);
-                players[2].setTeam(Player.Team.TEAM_BLUE);
+                players[1].setTeam(Player.Team.TEAM_BLUE);
+                players[2].setTeam(Player.Team.TEAM_RED);
                 players[3].setTeam(Player.Team.TEAM_BLUE);
                 break;
             case 6:
                 players[0].setTeam(Player.Team.TEAM_RED);
-                players[1].setTeam(Player.Team.TEAM_RED);
-                players[2].setTeam(Player.Team.TEAM_BLUE);
-                players[3].setTeam(Player.Team.TEAM_BLUE);
-                players[4].setTeam(Player.Team.TEAM_GREEN);
+                players[1].setTeam(Player.Team.TEAM_BLUE);
+                players[2].setTeam(Player.Team.TEAM_GREEN);
+                players[3].setTeam(Player.Team.TEAM_RED);
+                players[4].setTeam(Player.Team.TEAM_BLUE);
                 players[5].setTeam(Player.Team.TEAM_GREEN);
                 break;
         }

@@ -4,6 +4,8 @@ import java.util.*;
 
 public class Singo extends Piece {
 
+    private Direction direction;
+    
     public Singo(Location location, Direction direction) {
         this.location = location;
         this.direction = direction;
@@ -29,7 +31,7 @@ public class Singo extends Piece {
             Location left = new Location(x, y, 0);
             Location right = new Location(x - 1, y, 0);
             Location down = new Location(x, y + 1, 0);
-            switch (getDirection()) {
+            switch (direction) {
                 case SINGO_UP_DOWN_CLOSED:
                     board.connect(location, left, Board.ConnectionType.MONOLATERAL_OPEN);
                     board.connect(location, right, Board.ConnectionType.MONOLATERAL_OPEN);
@@ -47,7 +49,7 @@ public class Singo extends Piece {
             Location left = new Location(x + 1, y, 1);
             Location right = new Location(x, y, 1);
             Location up = new Location(x, y - 1, 1);
-            switch (getDirection()) {
+            switch (direction) {
                 case SINGO_DOWN_LEFT_CLOSED:
                     board.connect(location, right, Board.ConnectionType.MONOLATERAL_OPEN);
                     board.connect(location, up, Board.ConnectionType.MONOLATERAL_OPEN);

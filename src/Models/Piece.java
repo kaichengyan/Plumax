@@ -5,7 +5,6 @@ import java.util.*;
 abstract public class Piece {
 
     protected Location location;
-    protected Direction direction;
 
     public enum Type {
         TYPE_SINGO,
@@ -37,8 +36,6 @@ abstract public class Piece {
         SINGO_DOWN_LEFT_CLOSED,
         SINGO_DOWN_RIGHT_CLOSED,
         SINGO_DOWN_UP_CLOSED,
-        TRIGO,
-        DESTROYER
     }
 
     abstract public boolean use(Board board);
@@ -53,10 +50,6 @@ abstract public class Piece {
 
     public Location getLocation() {
         return location;
-    }
-
-    public Direction getDirection() {
-        return direction;
     }
 
 }

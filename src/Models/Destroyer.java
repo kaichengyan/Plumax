@@ -6,7 +6,6 @@ public class Destroyer extends Piece {
 
     public Destroyer(Location location) {
         this.location = location;
-        this.direction = Direction.DESTROYER;
     }
 
     public Destroyer(Scanner input) {
