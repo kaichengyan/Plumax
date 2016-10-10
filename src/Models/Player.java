@@ -8,7 +8,7 @@ public class Player {
 
     private Team team;
     private String name;
-    private List<ChessPiece.PieceType> pieces;
+    private List<Piece.Type> pieces;
 
     public Player(String name) {
         this.name = name;
@@ -17,38 +17,67 @@ public class Player {
 
     public void drawPiece(int num) {
         for (int i = 0; i < num; i++) {
-            ChessPiece.PieceType type = randomType();
+            Piece.Type type = randomType();
             pieces.add(type);
             System.out.println("\tYou get a " + type + " piece.");
         }
     }
 
-    private ChessPiece.PieceType randomType() {
+    private Piece.Type randomType() {
         Random random = new Random();
         int t = random.nextInt(100);
         if (t < 40)
-            return ChessPiece.PieceType.TYPE_SINGO;
+            return Piece.Type.TYPE_SINGO;
         else if (t < 70)
-            return ChessPiece.PieceType.TYPE_TRIGO;
+            return Piece.Type.TYPE_TRIGO;
         else if (t < 90)
-            return ChessPiece.PieceType.TYPE_ONE_WAY;
+            return Piece.Type.TYPE_ONE_WAY;
         else
-            return ChessPiece.PieceType.TYPE_DESTROYER;
+            return Piece.Type.TYPE_DESTROYER;
     }
 
-    public boolean putPiece(Board board, ChessPiece piece) {
-        if (!pieces.contains(piece.getType())) {
-            return false;
+    public boolean putPiece(Scanner input, Board board) {
+        System.out.println("\tYour pieces are: " + getPieces());
+        Piece piece;
+        Piece.Type type;
+        while (!getPieces().contains(type = readType(input))) {
+            System.out.println("\tSorry. You don't have that piece.");
         }
-        if (board.putPiece(piece)) {
-            pieces.remove(piece.getType());
+        if (type == Piece.Type.TYPE_TRIGO) {
+            piece = new Trigo(input);
+        } else if (type == Piece.Type.TYPE_SINGO) {
+            piece = new Singo(input);
+        } else if (type == Piece.Type.TYPE_ONE_WAY) {
+            piece = new Oneway(input);
+        } else {
+            piece = new Destroyer(input);
+        }
+        if (piece.use(board)) {
             board.update();
             return true;
+        } else {
+            return false;
         }
-        return false;
     }
 
-    public List<ChessPiece.PieceType> getPieces() {
+    private Piece.Type readType(Scanner input) {
+        System.out.print("\tWhat piece would you like to put? ");
+        String typeStr = input.next();
+        Piece.Type type;
+        if (typeStr.toLowerCase().startsWith("s"))
+            type = Piece.Type.TYPE_SINGO;
+        else if (typeStr.toLowerCase().startsWith("t"))
+            type = Piece.Type.TYPE_TRIGO;
+        else if (typeStr.toLowerCase().startsWith("o"))
+            type = Piece.Type.TYPE_ONE_WAY;
+        else if (typeStr.toLowerCase().startsWith("d"))
+            type = Piece.Type.TYPE_DESTROYER;
+        else
+            type = null;
+        return type;
+    }
+
+    public List<Piece.Type> getPieces() {
         return pieces;
     }
 
@@ -64,8 +93,19 @@ public class Player {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public enum Team {
+        TEAM_RED,
+        TEAM_BLUE,
+        TEAM_GREEN;
+    
+        @Override
+        public String toString() {
+            switch (this) {
+                case TEAM_RED: return "Player.Team RED";
+                case TEAM_BLUE: return "Player.Team BLUE";
+                case TEAM_GREEN: return "Player.Team GREEN";
+                default: return null;
+            }
+        }
     }
-
 }

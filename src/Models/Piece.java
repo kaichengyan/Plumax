@@ -1,12 +1,13 @@
 package Models;
 
-public class ChessPiece {
+import java.util.*;
 
-    private PieceType type;
-    private Location location;
-    private Direction direction;
+abstract public class Piece {
 
-    public enum PieceType {
+    protected Location location;
+    protected Direction direction;
+
+    public enum Type {
         TYPE_SINGO,
         TYPE_TRIGO,
         TYPE_DESTROYER,
@@ -36,19 +37,18 @@ public class ChessPiece {
         SINGO_DOWN_LEFT_CLOSED,
         SINGO_DOWN_RIGHT_CLOSED,
         SINGO_DOWN_UP_CLOSED,
-        TRIGO_UP,
-        TRIGO_DOWN,
+        TRIGO,
         DESTROYER
     }
 
-    public ChessPiece(PieceType type, Location location, Direction direction) {
-        this.type = type;
-        this.location = location;
-        this.direction = direction;
-    }
+    abstract public boolean use(Board board);
 
-    public PieceType getType() {
-        return type;
+    protected Location readLocation(Scanner input) {
+        System.out.print("\tWhat location would you like to put it? ");
+        int x = input.nextInt();
+        int y = input.nextInt();
+        int d = input.nextInt();
+        return new Location(x, y, d);
     }
 
     public Location getLocation() {

@@ -1,6 +1,6 @@
 package Models;
 
-public class Location implements Comparable<Location> {
+public class Location {
 
     private int x;
     private int y;
@@ -24,25 +24,6 @@ public class Location implements Comparable<Location> {
         return d;
     }
 
-    public boolean isValidLocation() {
-        int t = Board.BOARD_SIZE; // t = size of small triangles
-        if (d != 0 && d != 1) return false;
-        if (1 <= x && x <= t) {
-            if (t+1<=y && y<=t+x-1) return true;
-            if (y==t+x && d==0) return true;
-        } else if (t+1<=x && x<=2*t) {
-            if (x-t+1<=y && y<=3*t) return true;
-            if (y==x-t && d==1) return true;
-        } else if (2*t+1<=x && x<=3*t) {
-            if (t+1<=y && y<=x+t-1) return true;
-            if (y==x+t && d==0) return true;
-        } else if (3*t+1<=x && x<= 4*t) {
-            if (x-t+1 <= y && y<=3*t) return true;
-            if (y==x-t && d==1) return true;
-        }
-        return false;
-    }
-
     @Override
     public boolean equals(Object other) {
         return other instanceof Location
@@ -61,15 +42,26 @@ public class Location implements Comparable<Location> {
         return "(" + x + ", " + y + ", " + d + ")";
     }
 
-    @Override
-    public int compareTo(Location o) {
-        if (this.x - o.x != 0) {
-            return this.x - o.x;
-        } else if (this.y - o.y != 0) {
-            return this.y - o.y;
-        } else if (this.d - o.d != 0) {
-            return this.d - o.d;
+    public static class LocationPair {
+
+        private Location from;
+        private Location to;
+
+        public LocationPair(Location from, Location to) {
+            this.from = from;
+            this.to = to;
         }
-        return 0;
+
+        @Override
+        public boolean equals(Object o) {
+            return o instanceof LocationPair
+                    && this.from.equals(((LocationPair) o).from)
+                    && this.to.equals(((LocationPair) o).to);
+        }
+
+        @Override
+        public int hashCode() {
+            return this.from.hashCode() +  (this.to.hashCode() << 16) ;
+        }
     }
 }
