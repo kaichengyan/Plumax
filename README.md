@@ -2,6 +2,13 @@
 
 A board game, inspired by Saboteur and Chinese Checker. Created by Kyle and Cindy from No. 2 High School of ECNU. 
 
+TODO: 
+
+- [ ] Android Version
+- [ ] Bluetooth/Wifi PvP battle
+- [ ] Game AI
+- [ ] iOS Version
+
 Copyright 2016 Kaicheng Yan
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
