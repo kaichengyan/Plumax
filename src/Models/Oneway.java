@@ -1,6 +1,6 @@
 package Models;
 
-import java.util.*;
+import java.util.Scanner;
 
 public class Oneway extends Piece {
 
@@ -82,11 +82,11 @@ public class Oneway extends Piece {
             System.out.print("\t");
             switch (input.nextInt()) {
                 case 1:
-                    return Piece.Direction.ONE_WAY_UP_RIGHT_IN;
+                    return Direction.ONE_WAY_UP_RIGHT_IN;
                 case 2:
-                    return Piece.Direction.ONE_WAY_UP_LEFT_IN;
+                    return Direction.ONE_WAY_UP_LEFT_IN;
                 case 3:
-                    return Piece.Direction.ONE_WAY_UP_DOWN_IN;
+                    return Direction.ONE_WAY_UP_DOWN_IN;
                 default:
                     return null;
             }
@@ -97,14 +97,23 @@ public class Oneway extends Piece {
             System.out.print("\t");
             switch (input.nextInt()) {
                 case 1:
-                    return Piece.Direction.ONE_WAY_DOWN_RIGHT_IN;
+                    return Direction.ONE_WAY_DOWN_RIGHT_IN;
                 case 2:
-                    return Piece.Direction.ONE_WAY_DOWN_LEFT_IN;
+                    return Direction.ONE_WAY_DOWN_LEFT_IN;
                 case 3:
-                    return Piece.Direction.ONE_WAY_DOWN_UP_IN;
+                    return Direction.ONE_WAY_DOWN_UP_IN;
                 default:
                     return null;
             }
         }
+    }
+
+    public enum Direction {
+        ONE_WAY_UP_RIGHT_IN,
+        ONE_WAY_UP_DOWN_IN,
+        ONE_WAY_UP_LEFT_IN,
+        ONE_WAY_DOWN_UP_IN,
+        ONE_WAY_DOWN_LEFT_IN,
+        ONE_WAY_DOWN_RIGHT_IN
     }
 }

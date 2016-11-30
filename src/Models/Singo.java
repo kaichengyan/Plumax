@@ -1,6 +1,6 @@
 package Models;
 
-import java.util.*;
+import java.util.Scanner;
 
 public class Singo extends Piece {
 
@@ -25,9 +25,9 @@ public class Singo extends Piece {
             return false;
         }
         board.setBoardMatrix(location, this);
-        if (direction == Piece.Direction.SINGO_UP_DOWN_CLOSED
-                || direction == Piece.Direction.SINGO_UP_LEFT_CLOSED
-                || direction == Piece.Direction.SINGO_UP_RIGHT_CLOSED) {
+        if (direction == Direction.SINGO_UP_DOWN_CLOSED
+                || direction == Direction.SINGO_UP_LEFT_CLOSED
+                || direction == Direction.SINGO_UP_RIGHT_CLOSED) {
             Location left = new Location(x, y, 0);
             Location right = new Location(x - 1, y, 0);
             Location down = new Location(x, y + 1, 0);
@@ -76,11 +76,11 @@ public class Singo extends Piece {
             System.out.print("\t");
             switch (input.nextInt()) {
                 case 1:
-                    return Piece.Direction.SINGO_UP_RIGHT_CLOSED;
+                    return Direction.SINGO_UP_RIGHT_CLOSED;
                 case 2:
-                    return Piece.Direction.SINGO_UP_LEFT_CLOSED;
+                    return Direction.SINGO_UP_LEFT_CLOSED;
                 case 3:
-                    return Piece.Direction.SINGO_UP_DOWN_CLOSED;
+                    return Direction.SINGO_UP_DOWN_CLOSED;
                 default:
                     throw new IllegalArgumentException();
             }
@@ -91,14 +91,24 @@ public class Singo extends Piece {
             System.out.print("\t");
             switch (input.nextInt()) {
                 case 1:
-                    return Piece.Direction.SINGO_DOWN_RIGHT_CLOSED;
+                    return Direction.SINGO_DOWN_RIGHT_CLOSED;
                 case 2:
-                    return Piece.Direction.SINGO_DOWN_LEFT_CLOSED;
+                    return Direction.SINGO_DOWN_LEFT_CLOSED;
                 case 3:
-                    return Piece.Direction.SINGO_DOWN_UP_CLOSED;
+                    return Direction.SINGO_DOWN_UP_CLOSED;
                 default:
                     throw new IllegalArgumentException();
             }
         }
     }
+
+    public enum Direction {
+        SINGO_UP_RIGHT_CLOSED,
+        SINGO_UP_DOWN_CLOSED,
+        SINGO_DOWN_LEFT_CLOSED,
+        SINGO_DOWN_RIGHT_CLOSED,
+        SINGO_DOWN_UP_CLOSED,
+        SINGO_UP_LEFT_CLOSED
+    }
+
 }
