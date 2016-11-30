@@ -63,5 +63,7 @@ public class Location {
         public int hashCode() {
             return this.from.hashCode() +  (this.to.hashCode() << 16) ;
         }
+
     }
+
 }
